@@ -131,3 +131,24 @@ func ParseExpr(expr string) []Term {
 
 	return SimplifyTerms(terms)
 }
+
+// Differentiate differentiates expr by v
+func Differentiate(expr []Term, v string) []Term {
+	for i := 0; i < len(expr); i++ {
+		isPureNumeric := true
+		for j := 0; j < len(expr[i]); j++ {
+			e := &expr[i][j]
+			if e.Type == Undefined {
+				fmt.Println("undefined elements in expression")
+				os.Exit(1)
+			} else if e.Type != Number {
+				isPureNumeric = false
+			}
+		}
+		if isPureNumeric {
+			// We assume, that the numeric Elements are always at [0] in a Term
+			expr[i][0].Value = 0
+		}
+	}
+	return expr
+}
