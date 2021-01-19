@@ -413,3 +413,155 @@ func TestDiffVar1(t *testing.T) {
 	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
+
+func TestDiffVar2(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    2,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Variable,
+				Name:     "x",
+				Positive: true,
+				Power:    1,
+			},
+		},
+		Term{
+			Element{
+				Type:     Number,
+				Value:    8,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Variable,
+				Name:     "x",
+				Positive: true,
+				Power:    3,
+			},
+		},
+	}
+	expr := "x*x + 2 * x * x * x * x"
+	parsed := ParseExpr(expr)
+	t.Log("parsed: ", parsed)
+	p := Differentiate(parsed, "x")
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}
+
+func TestDiffVar3(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    0,
+				Positive: true,
+				Power:    1,
+			},
+		},
+		Term{
+			Element{
+				Type:     Number,
+				Value:    8,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Variable,
+				Name:     "x",
+				Positive: true,
+				Power:    3,
+			},
+		},
+	}
+	expr := "3* y * y + 2 * x * x * x * x"
+	parsed := ParseExpr(expr)
+	t.Log("parsed: ", parsed)
+	p := Differentiate(parsed, "x")
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}
+
+func TestDiffVar4(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    6,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Variable,
+				Name:     "y",
+				Positive: true,
+				Power:    2,
+			},
+			Element{
+				Type:     Variable,
+				Name:     "x",
+				Positive: true,
+				Power:    1,
+			},
+		},
+		Term{
+			Element{
+				Type:     Number,
+				Value:    8,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Variable,
+				Name:     "x",
+				Positive: true,
+				Power:    3,
+			},
+		},
+	}
+	expr := "3* y * y * x * x + 2 * x * x * x * x"
+	parsed := ParseExpr(expr)
+	t.Log("parsed: ", parsed)
+	p := Differentiate(parsed, "x")
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}
+
+func TestDiffVar5(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    0,
+				Positive: true,
+				Power:    1,
+			},
+		},
+	}
+	expr := "3* y * y"
+	parsed := ParseExpr(expr)
+	t.Log("parsed: ", parsed)
+	p := Differentiate(parsed, "x")
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}

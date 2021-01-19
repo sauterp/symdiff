@@ -7,12 +7,12 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("symdiff accepts exactly one argument for the expression you would like to differentiate.")
+	if len(os.Args) != 3 {
+		fmt.Println("symdiff accepts exactly two arguments, the expression you would like to differentiate followed by the variable you would like to differentiate by.")
 	}
 	expr := os.Args[1]
 
-	ParseExpr(expr)
+	fmt.Println(RenderExpr(Differentiate(ParseExpr(expr), os.Args[2])))
 }
 
 type Type int
@@ -190,7 +190,7 @@ func ParseExpr(expr string) []Term {
 // Differentiate differentiates expr by v
 func Differentiate(expr []Term, v string) []Term {
 	for i := 0; i < len(expr); i++ {
-		isPureNumeric := true
+		noDiffVar := true
 		for j := 0; j < len(expr[i]); j++ {
 			e := &expr[i][j]
 			if e.Type == Undefined {
@@ -198,16 +198,25 @@ func Differentiate(expr []Term, v string) []Term {
 				os.Exit(1)
 			} else if e.Type == Variable {
 				if e.Name == v {
-					// We assume, there is always a Number Element before e
-					expr[i][j-1].Value *= e.Power
+					// We assume, there is always a Number Element at expr[i][0], this is ensured by SimplifyTerms
+					expr[i][0].Value *= e.Power
 					expr[i][j].Power--
+					noDiffVar = false
 				}
-				isPureNumeric = false
 			}
 		}
-		if isPureNumeric {
+		if noDiffVar {
 			// We assume, that the numeric Elements are always at [0] in a Term
-			expr[i][0].Value = 0
+			rhTerms := expr[i+1:]
+			expr = append(expr[:i], Term{
+				Element{
+					Type:     Number,
+					Value:    0,
+					Power:    1,
+					Positive: true,
+				},
+			})
+			expr = append(expr[:i+1], rhTerms...)
 		}
 	}
 	return expr
