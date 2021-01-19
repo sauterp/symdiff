@@ -39,19 +39,74 @@ func SimplifyTerms(terms []Term) []Term {
 	// group all Variables with the same name and express them as one power
 	// remove 0 powers
 
+	// we need one number Number and one V
+	var r []Term
 	for i := 0; i < len(terms); i++ {
+		// collect all numbers
+		numberEl := Element{
+			Type:     Undefined,
+			Positive: true,
+			Power:    1,
+		}
+		// collect all variables with the same name
+		vars := make(map[string]Element)
 		for j := 0; j < len(terms[i]); j++ {
 			e := &terms[i][j]
-			// remove Undefined Elements
-			if e.Type == Undefined {
+			switch e.Type {
+			case Undefined:
+				// remove Undefined Elements
 				t := terms[i]
 				terms[i] = append(t[:j], t[j+1:]...)
 				j--
+			case Variable:
+				vEl, ok := vars[e.Name]
+				if ok {
+					vEl.Power += e.Power
+					vars[e.Name] = vEl
+				} else {
+					vars[e.Name] = Element{
+						Type:     Variable,
+						Name:     e.Name,
+						Power:    e.Power,
+						Positive: true,
+					}
+				}
+			case Number:
+				if numberEl.Type == Undefined {
+					numberEl.Type = Number
+					numberEl.Value = e.Value
+					numberEl.Positive = e.Positive
+					numberEl.Power = e.Power
+				} else {
+					// TODO support fractions
+					numberEl.Value *= e.Value
+					if numberEl.Positive == e.Positive {
+						numberEl.Positive = true
+					} else {
+						numberEl.Positive = false
+					}
+				}
 			}
 		}
+
+		var newTerm Term
+		if numberEl.Type == Undefined {
+			newTerm = append(newTerm, Element{
+				Type:     Number,
+				Positive: true,
+				Power:    1,
+				Value:    1,
+			})
+		} else {
+			newTerm = append(newTerm, numberEl)
+		}
+		for _, v := range vars {
+			newTerm = append(newTerm, v)
+		}
+		r = append(r, newTerm)
 	}
 
-	return terms
+	return r
 }
 
 // ParseExpr parses polynomials expressed like this: "x*x + x + 1"
@@ -141,7 +196,12 @@ func Differentiate(expr []Term, v string) []Term {
 			if e.Type == Undefined {
 				fmt.Println("undefined elements in expression")
 				os.Exit(1)
-			} else if e.Type != Number {
+			} else if e.Type == Variable {
+				if e.Name == v {
+					// We assume, there is always a Number Element before e
+					expr[i][j-1].Value *= e.Power
+					expr[i][j].Power--
+				}
 				isPureNumeric = false
 			}
 		}
@@ -151,4 +211,26 @@ func Differentiate(expr []Term, v string) []Term {
 		}
 	}
 	return expr
+}
+
+func RenderExpr(terms []Term) string {
+	r := ""
+	for i := 0; i < len(terms); i++ {
+		for j := 0; j < len(terms[i]); j++ {
+			e := &terms[i][j]
+			switch e.Type {
+			case Variable:
+				r += fmt.Sprintf(" (%s^%d)", e.Name, e.Power)
+			case Number:
+				var op string
+				if e.Positive {
+					op = "+"
+				} else {
+					op = "-"
+				}
+				r += fmt.Sprintf(" %s%d", op, e.Value)
+			}
+		}
+	}
+	return r
 }

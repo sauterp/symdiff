@@ -21,6 +21,8 @@ func TestNumber1(t *testing.T) {
 	expr := "123"
 	p := ParseExpr(expr)
 
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
 
@@ -48,6 +50,8 @@ func TestNumber2(t *testing.T) {
 	expr := "123 + 45"
 	p := ParseExpr(expr)
 
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
 
@@ -75,6 +79,8 @@ func TestNumber3(t *testing.T) {
 	expr := "123 - 45"
 	p := ParseExpr(expr)
 
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
 
@@ -83,12 +89,6 @@ func TestMult1(t *testing.T) {
 
 	should := []Term{
 		Term{
-			Element{
-				Type:     Number,
-				Value:    1,
-				Positive: true,
-				Power:    1,
-			},
 			Element{
 				Type:     Number,
 				Value:    2,
@@ -100,6 +100,8 @@ func TestMult1(t *testing.T) {
 	expr := "1 * 2"
 	p := ParseExpr(expr)
 
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
 
@@ -125,6 +127,8 @@ func TestDiv1(t *testing.T) {
 	expr := "1 / 2"
 	p := ParseExpr(expr)
 
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
 
@@ -133,6 +137,12 @@ func TestVar1(t *testing.T) {
 
 	should := []Term{
 		Term{
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    1,
+			},
 			Element{
 				Type:     Variable,
 				Value:    0,
@@ -145,6 +155,8 @@ func TestVar1(t *testing.T) {
 	expr := "x"
 	p := ParseExpr(expr)
 
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
 
@@ -153,6 +165,12 @@ func TestVar2(t *testing.T) {
 
 	should := []Term{
 		Term{
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    1,
+			},
 			Element{
 				Type:     Variable,
 				Value:    0,
@@ -165,6 +183,8 @@ func TestVar2(t *testing.T) {
 	expr := "xy"
 	p := ParseExpr(expr)
 
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
 
@@ -173,6 +193,12 @@ func TestVar3(t *testing.T) {
 
 	should := []Term{
 		Term{
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    1,
+			},
 			Element{
 				Type:     Variable,
 				Value:    0,
@@ -192,6 +218,120 @@ func TestVar3(t *testing.T) {
 	expr := "xy / abc"
 	p := ParseExpr(expr)
 
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}
+
+func TestVar4(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Variable,
+				Value:    0,
+				Positive: true,
+				Power:    3,
+				Name:     "x",
+			},
+		},
+	}
+	expr := "x * x * x"
+	p := ParseExpr(expr)
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}
+
+func TestNumVar1(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    8,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Variable,
+				Value:    0,
+				Positive: true,
+				Power:    1,
+				Name:     "x",
+			},
+		},
+	}
+	expr := "8*x"
+	p := ParseExpr(expr)
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}
+
+func TestNumVar2(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    8,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Variable,
+				Value:    0,
+				Positive: true,
+				Power:    1,
+				Name:     "x",
+			},
+		},
+	}
+	expr := "x*8"
+	p := ParseExpr(expr)
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}
+
+func TestNumVar3(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    8,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Variable,
+				Value:    0,
+				Positive: true,
+				Power:    1,
+				Name:     "x",
+			},
+		},
+	}
+	expr := "2*x*2 *  2"
+	p := ParseExpr(expr)
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
 
@@ -211,6 +351,8 @@ func TestDiff1(t *testing.T) {
 	expr := "1"
 	p := Differentiate(ParseExpr(expr), "x")
 
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
 
@@ -238,5 +380,36 @@ func TestDiff2(t *testing.T) {
 	expr := "1 + 2"
 	p := Differentiate(ParseExpr(expr), "x")
 
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}
+
+func TestDiffVar1(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    2,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Variable,
+				Name:     "x",
+				Positive: true,
+				Power:    1,
+			},
+		},
+	}
+	expr := "x*x"
+	parsed := ParseExpr(expr)
+	t.Log("parsed: ", parsed)
+	p := Differentiate(parsed, "x")
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
 	is.Equal(should, p)
 }
