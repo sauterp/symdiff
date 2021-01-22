@@ -47,6 +47,13 @@ func SimplifyTerms(terms []Term) []Term {
 			Type:     Undefined,
 			Positive: true,
 			Power:    1,
+			Value:    1,
+		}
+		denomEl := Element{
+			Type:     Undefined,
+			Positive: true,
+			Power:    -1,
+			Value:    1,
 		}
 		// collect all variables with the same name
 		vars := make(map[string]Element)
@@ -72,19 +79,30 @@ func SimplifyTerms(terms []Term) []Term {
 					}
 				}
 			case Number:
+				if denomEl.Type == Undefined {
+					denomEl.Type = Number
+					denomEl.Positive = e.Positive
+				}
 				if numberEl.Type == Undefined {
 					numberEl.Type = Number
-					numberEl.Value = e.Value
 					numberEl.Positive = e.Positive
 					numberEl.Power = e.Power
+				}
+				if e.Power < 0 {
+					denomEl.Value *= e.Value
+					if denomEl.Positive == e.Positive {
+						denomEl.Positive = true
+					} else {
+						denomEl.Positive = false
+					}
 				} else {
-					// TODO support fractions
 					numberEl.Value *= e.Value
 					if numberEl.Positive == e.Positive {
 						numberEl.Positive = true
 					} else {
 						numberEl.Positive = false
 					}
+
 				}
 			}
 		}
@@ -100,9 +118,22 @@ func SimplifyTerms(terms []Term) []Term {
 		} else {
 			newTerm = append(newTerm, numberEl)
 		}
+
+		if denomEl.Type == Undefined {
+			newTerm = append(newTerm, Element{
+				Type:     Number,
+				Positive: true,
+				Power:    -1,
+				Value:    1,
+			})
+		} else {
+			newTerm = append(newTerm, denomEl)
+		}
+
 		for _, v := range vars {
 			newTerm = append(newTerm, v)
 		}
+
 		r = append(r, newTerm)
 	}
 
@@ -198,7 +229,7 @@ func Differentiate(expr []Term, v string) []Term {
 				os.Exit(1)
 			} else if e.Type == Variable {
 				if e.Name == v {
-					// We assume, there is always a Number Element at expr[i][0], this is ensured by SimplifyTerms
+					// We assume, there is always a nominator Number Element at expr[i][0], this is ensured by SimplifyTerms
 					expr[i][0].Value *= e.Power
 					expr[i][j].Power--
 					noDiffVar = false
@@ -206,7 +237,7 @@ func Differentiate(expr []Term, v string) []Term {
 			}
 		}
 		if noDiffVar {
-			// We assume, that the numeric Elements are always at [0] in a Term
+			// We assume, that the numeric Elements are always at [0](nominator) and [1](denominator) in a Term
 			rhTerms := expr[i+1:]
 			expr = append(expr[:i], Term{
 				Element{
@@ -237,7 +268,11 @@ func RenderExpr(terms []Term) string {
 				} else {
 					op = "-"
 				}
-				r += fmt.Sprintf(" %s%d", op, e.Value)
+				if e.Power < 0 {
+					r += fmt.Sprintf(" /%s%d", op, e.Value)
+				} else {
+					r += fmt.Sprintf(" %s%d", op, e.Value)
+				}
 			}
 		}
 	}

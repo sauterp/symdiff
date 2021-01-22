@@ -16,6 +16,12 @@ func TestNumber1(t *testing.T) {
 				Positive: true,
 				Power:    1,
 			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
+			},
 		},
 	}
 	expr := "123"
@@ -37,6 +43,12 @@ func TestNumber2(t *testing.T) {
 				Positive: true,
 				Power:    1,
 			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
+			},
 		},
 		Term{
 			Element{
@@ -44,6 +56,12 @@ func TestNumber2(t *testing.T) {
 				Value:    45,
 				Positive: true,
 				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
 			},
 		},
 	}
@@ -66,13 +84,25 @@ func TestNumber3(t *testing.T) {
 				Positive: true,
 				Power:    1,
 			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
+			},
 		},
 		Term{
 			Element{
 				Type:     Number,
 				Value:    45,
-				Positive: false,
+				Positive: true,
 				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: false,
+				Power:    -1,
 			},
 		},
 	}
@@ -94,6 +124,12 @@ func TestMult1(t *testing.T) {
 				Value:    2,
 				Positive: true,
 				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
 			},
 		},
 	}
@@ -132,6 +168,59 @@ func TestDiv1(t *testing.T) {
 	is.Equal(should, p)
 }
 
+func TestDiv2(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    3,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    5,
+				Positive: true,
+				Power:    -1,
+			},
+		},
+	}
+	expr := "3 / 5"
+	p := ParseExpr(expr)
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}
+
+func TestDiv3(t *testing.T) {
+	is := is.New(t)
+
+	should := []Term{
+		Term{
+			Element{
+				Type:     Number,
+				Value:    3,
+				Positive: true,
+				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    5,
+				Positive: true,
+				Power:    -1,
+			},
+		},
+	}
+	p := SimplifyTerms(should)
+
+	t.Log("is:     ", RenderExpr(p))
+	t.Log("should: ", RenderExpr(should))
+	is.Equal(should, p)
+}
+
 func TestVar1(t *testing.T) {
 	is := is.New(t)
 
@@ -142,6 +231,12 @@ func TestVar1(t *testing.T) {
 				Value:    1,
 				Positive: true,
 				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
 			},
 			Element{
 				Type:     Variable,
@@ -172,6 +267,12 @@ func TestVar2(t *testing.T) {
 				Power:    1,
 			},
 			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
+			},
+			Element{
 				Type:     Variable,
 				Value:    0,
 				Positive: true,
@@ -198,6 +299,12 @@ func TestVar3(t *testing.T) {
 				Value:    1,
 				Positive: true,
 				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
 			},
 			Element{
 				Type:     Variable,
@@ -235,6 +342,12 @@ func TestVar4(t *testing.T) {
 				Power:    1,
 			},
 			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
+			},
+			Element{
 				Type:     Variable,
 				Value:    0,
 				Positive: true,
@@ -261,6 +374,12 @@ func TestNumVar1(t *testing.T) {
 				Value:    8,
 				Positive: true,
 				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
 			},
 			Element{
 				Type:     Variable,
@@ -291,6 +410,12 @@ func TestNumVar2(t *testing.T) {
 				Power:    1,
 			},
 			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
+			},
+			Element{
 				Type:     Variable,
 				Value:    0,
 				Positive: true,
@@ -317,6 +442,12 @@ func TestNumVar3(t *testing.T) {
 				Value:    8,
 				Positive: true,
 				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
 			},
 			Element{
 				Type:     Variable,
@@ -397,6 +528,12 @@ func TestDiffVar1(t *testing.T) {
 				Power:    1,
 			},
 			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
+			},
+			Element{
 				Type:     Variable,
 				Name:     "x",
 				Positive: true,
@@ -426,6 +563,12 @@ func TestDiffVar2(t *testing.T) {
 				Power:    1,
 			},
 			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
+			},
+			Element{
 				Type:     Variable,
 				Name:     "x",
 				Positive: true,
@@ -438,6 +581,12 @@ func TestDiffVar2(t *testing.T) {
 				Value:    8,
 				Positive: true,
 				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
 			},
 			Element{
 				Type:     Variable,
@@ -477,6 +626,12 @@ func TestDiffVar3(t *testing.T) {
 				Power:    1,
 			},
 			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
+			},
+			Element{
 				Type:     Variable,
 				Name:     "x",
 				Positive: true,
@@ -506,6 +661,12 @@ func TestDiffVar4(t *testing.T) {
 				Power:    1,
 			},
 			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
+			},
+			Element{
 				Type:     Variable,
 				Name:     "y",
 				Positive: true,
@@ -524,6 +685,12 @@ func TestDiffVar4(t *testing.T) {
 				Value:    8,
 				Positive: true,
 				Power:    1,
+			},
+			Element{
+				Type:     Number,
+				Value:    1,
+				Positive: true,
+				Power:    -1,
 			},
 			Element{
 				Type:     Variable,
